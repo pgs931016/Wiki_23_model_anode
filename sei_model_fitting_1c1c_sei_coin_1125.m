@@ -5,6 +5,8 @@ addpath("D:\250421연구실컴퓨터\fig7_논문코드");
 folder_path = 'D:\250421연구실컴퓨터\fig_pol\RPT_OCV';
 file_list = dir(fullfile(folder_path, '*Merged.mat'));
 
+nFiles = length(file_list);
+
 colors = [
     0.125490196078431 0.521568627450980 0.305882352941177;  % 초록
     0.301960784313725 0.733333333333333 0.835294117647059;  % 하늘
@@ -69,10 +71,12 @@ if do_fit == true
 
     num_start_points = 1000;
     [para_hat, fval, exitflag, output, solutions] = run(ms, problem, num_start_points);
-    para_opt = para_hat;
-
-    Ea_opt = para_opt(1);
-    B_opt = para_opt(2);
+    
+    para_opt{f} = para_hat;
+    file_names{f} = file_list(f).name;
+    
+    Ea_opt = para_opt{f}(1);
+    B_opt  = para_opt{f}(2);
     fprintf('Optimized Ea: %.5f eV\n', Ea_opt);
     fprintf('Optimized B: %.5e\n', B_opt);
 
@@ -122,4 +126,5 @@ Q_model = 1 - A * sqrt(t);
 
 cost = sqrt(mean((Q_exp - Q_model).^2));
 end
+
 
