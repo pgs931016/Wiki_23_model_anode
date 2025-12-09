@@ -3,7 +3,7 @@ clc; clear; close all
 addpath("D:\250421연구실컴퓨터\fig_pol\RPT_OCV");
 folder_path = 'D:\250421연구실컴퓨터\fig_pol\RPT_OCV';
 file_list = dir(fullfile(folder_path, '*Merged.mat'));
-
+nFiles = length(file_list);
 
 colors = [
     0.125490196078431 0.521568627450980 0.305882352941177;  % 초록
@@ -17,11 +17,12 @@ I_1C = 55.6;
 kB   = 8.617e-5; % eV/K
 T    = 298.15;   % K (고정)
 
-
+para_cell = cell(nFiles, 1);   
+file_names = cell(nFiles, 1); 
 figure(1); hold on;
 
 
-for f = 1:length(file_list)
+for f = 1:nFiles
         color_f = colors(mod(f-1,4)+1 , :);   % 파일마다 다른색상
 
 
@@ -178,10 +179,7 @@ para0 = [1e-4, 3, 10, 1e-4, 10];
 lb    = [0,    0,  0,  0,    0];
 ub    = [1,   10, 50, 10,  100];
 
-dQdt_model_cell     = cell(1, num_intervals);
-para_cell           = cell(1, num_intervals);
-cap_model_cell      = cell(1, num_intervals);
-rmse_local          = inf(1, num_intervals);
+
 
 scatter(t_all,  Q_exp, 'o', 'MarkerEdgeColor', color_now); 
 
@@ -223,6 +221,8 @@ for ii = 1:num_intervals
     dQdt_model = func_Q(I_data, Vp_data, eta_data, t_grid, x_hat);
     dQdt_model_cell{ii} = dQdt_model;
     para_cell{ii}       = x_hat;
+    file_names{f} = file_list(f).name;
+    para_cell{f} = para_cell;
 
     % 용량 모델 누적(구간 기준)
     if ii==1
@@ -399,5 +399,6 @@ function [SOC_OCV_ref, V_OCV_ref] = load_soc_v_from_file(matPath)
             return
         end
     end
+
 
 end
